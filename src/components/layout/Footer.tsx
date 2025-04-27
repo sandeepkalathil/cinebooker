@@ -1,8 +1,19 @@
-
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FacebookIcon, TwitterIcon, InstagramIcon, YoutubeIcon, MailIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle subscription logic here
+    console.log(`Subscribed with email: ${email}`);
+    setEmail('');
+  };
+
   return (
     <footer className="bg-card mt-12 pt-10 pb-6">
       <div className="container mx-auto px-4">
@@ -13,17 +24,17 @@ const Footer = () => {
               The ultimate cinema experience with the latest blockbusters and timeless classics.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <FacebookIcon size={20} />
+              <a href="https://facebook.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Facebook">
+                <FacebookIcon size={20} aria-hidden="true" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <TwitterIcon size={20} />
+              <a href="https://twitter.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Twitter">
+                <TwitterIcon size={20} aria-hidden="true" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <InstagramIcon size={20} />
+              <a href="https://instagram.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Instagram">
+                <InstagramIcon size={20} aria-hidden="true" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <YoutubeIcon size={20} />
+              <a href="https://youtube.com" className="text-muted-foreground hover:text-primary transition-colors" aria-label="YouTube">
+                <YoutubeIcon size={20} aria-hidden="true" />
               </a>
             </div>
           </div>
@@ -32,7 +43,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/movies" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
                   Movies
                 </Link>
               </li>
@@ -85,16 +96,21 @@ const Footer = () => {
             <p className="text-muted-foreground mb-4">
               Subscribe to our newsletter for updates on new releases and exclusive offers.
             </p>
-            <div className="flex">
-              <input
+            <form onSubmit={handleSubscribe} className="flex">
+              <Input
                 type="email"
                 placeholder="Your email"
-                className="px-4 py-2 rounded-l-md bg-muted/50 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+                className="rounded-r-none bg-muted/50 border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                aria-label="Email for newsletter"
               />
-              <button className="px-4 py-2 bg-primary text-white rounded-r-md hover:bg-primary/90 transition-colors">
-                <MailIcon size={18} />
-              </button>
-            </div>
+              <Button type="submit" className="rounded-l-none">
+                <MailIcon size={18} aria-hidden="true" />
+                <span className="sr-only">Subscribe</span>
+              </Button>
+            </form>
           </div>
         </div>
         

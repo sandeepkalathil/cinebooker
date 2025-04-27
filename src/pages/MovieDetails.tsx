@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Movie } from '@/types/cinema';
@@ -7,44 +7,39 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, Star, PlayCircle, CalendarDays } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { usePageViewMetrics } from '@/hooks/usePageViewMetrics';
-
-// Sample movie data
-const sampleMovies: Movie[] = [
-  {
-    id: "1",
-    title: "Inception",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg",
-    backdropUrl: "https://m.media-amazon.com/images/M/MV5BMjExMjkwNTQ0Nl5BMl5BanBnXkFtZTcwNTY0OTk1Mw@@._V1_.jpg",
-    synopsis: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
-    rating: 8.8,
-    duration: 148,
-    releaseDate: "2010-07-16",
-    genres: ["Action", "Adventure", "Sci-Fi"],
-    director: "Christopher Nolan",
-    cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"]
-  },
-  {
-    id: "2",
-    title: "The Shawshank Redemption",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg",
-    backdropUrl: "https://m.media-amazon.com/images/M/MV5BNTYxOTYyMzE3NV5BMl5BanBnXkFtZTcwOTMxNDY3Mw@@._V1_.jpg",
-    synopsis: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-    rating: 9.3,
-    duration: 142,
-    releaseDate: "1994-10-14",
-    genres: ["Drama"],
-    director: "Frank Darabont",
-    cast: ["Tim Robbins", "Morgan Freeman", "Bob Gunton"]
-  }
-];
+import { getMovieById } from '@/data/mockData';
 
 const MovieDetails: React.FC = () => {
   usePageViewMetrics();
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
   const [selectedDate, setSelectedDate] = useState<string>("2023-10-25");
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   
-  // Find the movie by ID
-  const movie = sampleMovies.find(m => m.id === id) || sampleMovies[0];
+  useEffect(() => {
+    // Reset state when the route changes
+    setLoading(true);
+    setError(null);
+    
+    // Get the movie by ID from our mock data
+    if (id) {
+      try {
+        const foundMovie = getMovieById(id);
+        if (foundMovie) {
+          setMovie(foundMovie);
+        } else {
+          setError("Movie not found");
+        }
+      } catch (err) {
+        console.error("Error fetching movie:", err);
+        setError("Failed to load movie details");
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [id, location.pathname]);
   
   // Sample showtimes
   const showtimes = [
@@ -64,6 +59,38 @@ const MovieDetails: React.FC = () => {
     { date: "2023-10-29", day: "Sun" }
   ];
 
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold">Loading movie details...</h1>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error || !movie) {
+    return (
+      <>
+        <Navbar />
+        <main className="container mx-auto px-4 py-12">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold">Movie not found</h1>
+            <p className="mt-4">The movie you're looking for doesn't exist or has been removed.</p>
+            <Button className="mt-6" asChild>
+              <Link to="/">Browse Movies</Link>
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />
@@ -74,6 +101,7 @@ const MovieDetails: React.FC = () => {
           <div 
             className="relative w-full h-[70vh] bg-cover bg-center"
             style={{ backgroundImage: `url(${movie.backdropUrl})` }}
+            aria-label={`${movie.title} backdrop`}
           >
             <div className="absolute inset-0 bg-black/30 z-0"></div>
             
@@ -83,7 +111,7 @@ const MovieDetails: React.FC = () => {
                   <div className="overflow-hidden rounded-lg shadow-2xl border border-white/10">
                     <img 
                       src={movie.posterUrl} 
-                      alt={movie.title} 
+                      alt={`${movie.title} poster`} 
                       className="w-full h-auto"
                     />
                   </div>
@@ -102,17 +130,17 @@ const MovieDetails: React.FC = () => {
                     {movie.title}
                   </h1>
                   
-                  <div className="flex items-center space-x-4 mb-4">
+                  <div className="flex flex-wrap items-center space-x-4 mb-4">
                     <div className="flex items-center">
-                      <Star className="h-5 w-5 mr-1 fill-gold-400 text-gold-400" />
+                      <Star className="h-5 w-5 mr-1 fill-yellow-400 text-yellow-400" aria-hidden="true" />
                       <span className="text-white">{movie.rating.toFixed(1)}/10</span>
                     </div>
                     <div className="flex items-center">
-                      <Clock className="h-5 w-5 mr-1 text-white" />
+                      <Clock className="h-5 w-5 mr-1 text-white" aria-hidden="true" />
                       <span className="text-white">{movie.duration} min</span>
                     </div>
                     <div className="flex items-center">
-                      <Calendar className="h-5 w-5 mr-1 text-white" />
+                      <Calendar className="h-5 w-5 mr-1 text-white" aria-hidden="true" />
                       <span className="text-white">{movie.releaseDate}</span>
                     </div>
                   </div>
@@ -125,8 +153,13 @@ const MovieDetails: React.FC = () => {
                     <Button size="lg" className="bg-primary hover:bg-primary/90" asChild>
                       <Link to={`/movies/${id}/booking`}>Book Tickets</Link>
                     </Button>
-                    <Button size="lg" variant="outline" className="border-white/50 text-white hover:bg-white/10">
-                      <PlayCircle className="mr-2 h-5 w-5" />
+                    <Button 
+                      size="lg" 
+                      variant="outline" 
+                      className="border-white/50 text-white hover:bg-white/10"
+                      onClick={() => movie.trailerUrl && window.open(movie.trailerUrl, '_blank')}
+                    >
+                      <PlayCircle className="mr-2 h-5 w-5" aria-hidden="true" />
                       Watch Trailer
                     </Button>
                   </div>
@@ -164,7 +197,7 @@ const MovieDetails: React.FC = () => {
                     className="flex flex-col items-center px-4 py-2"
                     onClick={() => setSelectedDate(date.date)}
                   >
-                    <CalendarDays className="h-4 w-4 mb-1" />
+                    <CalendarDays className="h-4 w-4 mb-1" aria-hidden="true" />
                     <span>{date.day}</span>
                   </Button>
                 ))}

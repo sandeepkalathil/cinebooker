@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
@@ -124,8 +125,8 @@ const Contact: React.FC = () => {
               <p className="text-muted-foreground mb-4">
                 Our customer support team is available to assist you with any questions or concerns.
               </p>
-              <Button variant="outline" className="w-full">
-                Visit Help Center
+              <Button variant="outline" className="w-full" asChild>
+                <Link to="/faq">Visit Help Center</Link>
               </Button>
             </div>
           </div>

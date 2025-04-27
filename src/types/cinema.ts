@@ -3,11 +3,11 @@ export interface Movie {
   title: string;
   posterUrl: string;
   backdropUrl: string;
-  synopsis: string;
-  rating: number;
-  duration: number;
   releaseDate: string;
+  duration: number;
+  rating: number;
   genres: string[];
+  synopsis: string;
   director: string;
   cast: string[];
   trailerUrl?: string;
@@ -17,21 +17,39 @@ export interface Theater {
   id: string;
   name: string;
   location: string;
-  address: string;
-  screens: number;
-  amenities: string[];
-  imageUrl: string;
+  screens: Screen[];
+}
+
+export interface Screen {
+  id: string;
+  name: string;
+  features: string[];
+  seatsLayout: SeatRow[];
+}
+
+export interface SeatRow {
+  row: string;
+  seats: Seat[];
+}
+
+export interface Seat {
+  id: string;
+  number: number;
+  type: 'standard' | 'premium';
+  status: 'available' | 'reserved' | 'booked';
 }
 
 export interface Showtime {
   id: string;
   movieId: string;
   theaterId: string;
-  screen: string;
-  time: string;
-  date: string;
-  price: number;
-  seatsAvailable: number;
+  screenId: string;
+  startTime: string;
+  endTime: string;
+  price: {
+    standard: number;
+    premium: number;
+  };
 }
 
 export interface Booking {
@@ -43,28 +61,7 @@ export interface Booking {
   seats: string[];
   totalPrice: number;
   bookingDate: string;
-  status: 'confirmed' | 'cancelled' | 'pending';
-}
-
-export interface SeatRow {
-  row: string;
-  seats: Seat[];
-}
-
-export interface Seat {
-  id: string;
-  row: string;
-  number: string;
-  status: 'available' | 'reserved';
-  type: 'standard' | 'premium';
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  bookings?: Booking[];
+  status: 'confirmed' | 'pending' | 'cancelled';
 }
 
 export interface Promotion {
