@@ -12,7 +12,7 @@ import ForgotPassword from "@/pages/ForgotPassword"
 import Contact from "@/pages/Contact"
 import Terms from "@/pages/Terms"
 import Privacy from "@/pages/Privacy"
-import FAQ from "@/pages/FAQ"
+import Faq from "@/pages/Faq"
 import Theaters from "@/pages/Theaters"
 import "./App.css"
 
