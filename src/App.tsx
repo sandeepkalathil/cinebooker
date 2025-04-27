@@ -1,20 +1,20 @@
-import { ThemeProvider } from "@/components/theme-provider"
-import { Routes, Route } from "react-router-dom"
-import Index from "@/pages/Index"
-import MovieDetails from "@/pages/MovieDetails"
-import MovieBooking from "@/pages/MovieBooking"
-import Promotions from "@/pages/Promotions"
-import ComingSoon from "@/pages/ComingSoon"
-import Bookings from "@/pages/Bookings"
-import Login from "@/pages/Login"
-import Register from "@/pages/Register"
-import ForgotPassword from "@/pages/ForgotPassword"
-import Contact from "@/pages/Contact"
-import Terms from "@/pages/Terms"
-import Privacy from "@/pages/Privacy"
-import Faq from "@/pages/Faq"
-import Theaters from "@/pages/Theaters"
-import "./App.css"
+import { ThemeProvider } from "@/components/theme-provider";
+import { Routes, Route } from "react-router-dom";
+import Index from "@/pages/Index";
+import MovieDetails from "@/pages/MovieDetails";
+import MovieBooking from "@/pages/MovieBooking";
+import Promotions from "@/pages/Promotions";
+import ComingSoon from "@/pages/ComingSoon";
+import Bookings from "@/pages/Bookings";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import ForgotPassword from "@/pages/ForgotPassword";
+import Contact from "@/pages/Contact";
+import Terms from "@/pages/Terms";
+import Privacy from "@/pages/Privacy";
+import Faq from "@/pages/Faq";  // Corrected import
+import Theaters from "@/pages/Theaters";
+import "./App.css";
 
 function App() {
   return (
@@ -33,12 +33,12 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
-          <Route path="/faq" element={<FAQ />} />
+          <Route path="/faq" element={<Faq />} /> {/* Corrected route */}
           <Route path="/theaters" element={<Theaters />} />
         </Routes>
       </div>
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;
